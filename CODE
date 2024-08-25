@@ -1,0 +1,377 @@
+#include <iostream>
+#include <string>
+#include <fstream>
+#include <sstream>
+#include <iomanip>
+#include <limits>
+
+
+using namespace std;
+
+const int maxrow = 15;
+
+struct Character
+{
+    string charId;
+    string charName;
+    string gender;
+    string age;
+    string animeSeries;
+    string status;
+    string role;
+    string power;
+    string species;
+    string height;
+};
+
+Character characters[maxrow];
+
+const string databaseFilePath = "AnimeCharacterDatabase.txt";
+
+void OpenFile()
+{
+    ifstream myfile(databaseFilePath);
+    if (!myfile.is_open())
+    {
+        cout << "Unable to open the file!" << endl;
+        return;
+    }
+
+    for (int x = 0; x < maxrow && getline(myfile, characters[x].charId, ','); x++)
+    {
+        getline(myfile, characters[x].charName, ',');
+        getline(myfile, characters[x].gender, ',');
+        getline(myfile, characters[x].age, ',');
+        getline(myfile, characters[x].animeSeries, ',');
+        getline(myfile, characters[x].status, ',');
+        getline(myfile, characters[x].role, ',');
+        getline(myfile, characters[x].power, ',');
+        getline(myfile, characters[x].species, ',');
+        getline(myfile, characters[x].height);
+    }
+
+    myfile.close();
+}
+
+void addRecord()
+{
+
+    Character newCharacter;
+    cout << "Character's ID: ";
+    getline(cin, newCharacter.charId);
+    cout << "Character's Name: ";
+    getline(cin, newCharacter.charName);
+    cout << "Character's gender: ";
+    getline(cin, newCharacter.gender);
+    cout << "Character's age: ";
+    getline(cin, newCharacter.age);
+    cout << "Series of anime: ";
+    getline(cin, newCharacter.animeSeries);
+    cout << "Character's status: ";
+    getline(cin, newCharacter.status);
+    cout << "Character's Role: ";
+    getline(cin, newCharacter.role);
+    cout << "Character's power: ";
+    getline(cin, newCharacter.power);
+    cout << "Character's species: ";
+    getline(cin, newCharacter.species);
+    cout << "Character's height (cm): ";
+    getline(cin, newCharacter.height);
+
+    // Find first empty slot to store if there is no slot it will automatic not counter because of the maxRow is 15 only ( you can change it)
+
+    for (int x = 0; x < maxrow; x++)
+    {
+        if (characters[x].charId.empty())
+        {
+            characters[x] = newCharacter;
+            break;
+        }
+    }
+}
+
+void updateRecord(string updateId)
+{
+    system("CLS");
+    bool found = false;
+
+    for (int x = 0; x < maxrow; x++)
+    {
+        if (characters[x].charId == updateId)
+        {
+            found = true;
+            cout << "Enter new details for Character ID " << updateId << ":" << endl;
+            cout << "Character Name: ";
+            cin.ignore();
+            getline(cin, characters[x].charName);
+            cout << "Gender: ";
+            getline(cin, characters[x].gender);
+            cout << "Age: ";
+            getline(cin, characters[x].age);
+            cout << "Anime Series: ";
+            getline(cin, characters[x].animeSeries);
+            cout << "Status: ";
+            getline(cin, characters[x].status);
+            cout << "Role: ";
+            getline(cin, characters[x].role);
+            cout << "Power: ";
+            getline(cin, characters[x].power);
+            cout << "Species: ";
+            getline(cin, characters[x].species);
+            cout << "Height (cm): ";
+            getline(cin, characters[x].height);
+            cout << "Record updated successfully." << endl;
+            break;
+        }
+    }
+
+    if (!found)
+    {
+        cout << "Record not found." << endl;
+    }
+}
+
+void deleteRecord()
+{
+    system("cls");
+    string deleteId;
+    cout << "Enter Character ID to delete: ";
+    cin >> deleteId;
+    cin.ignore();
+    bool found = false;
+
+    for (int x = 0; x < maxrow; x++)
+    {
+        if (characters[x].charId == deleteId)
+        {
+            found = true;
+            characters[x] = Character(); // reset character index [x] in the maxrow purpose nito
+            cout << "Record deleted successfully." << endl;
+            break;
+        }
+    }
+
+    if (!found)
+    {
+        cout << "Record not found." << endl;
+    }
+}
+
+void displayRecord()
+{
+    system("CLS");
+    cout << setw(97) <<"Current record(s): " << endl;
+    cout << "\n=============================================================================================================================================================================" << endl;
+    cout << "| " << setw(10) << "CODE NO."
+         << " | " << setw(17) << "NAME"
+         << " | " << setw(10) << "GENDER"
+         << " | " << setw(5) << "AGE"
+         << " | " << setw(30) << "ANIME SERIES"
+         << " | " << setw(12) << "STATUS"
+         << " | " << setw(12) << "ROLE"
+         << " | " << setw(20) << "POWER"
+         << " | " << setw(14) << "SPECIES"
+         << " | " << setw(12) << "HEIGHT (cm)"
+         << " |" << endl;
+
+    cout << "=============================================================================================================================================================================" << endl;
+    int counter = 0;
+
+    for (int x = 0; x < maxrow; x++)
+    {
+        if (!characters[x].charId.empty())
+        {
+            counter++;
+            cout << "| " << setw(10) << characters[x].charId
+                 << " | " << setw(17) << characters[x].charName
+                 << " | " << setw(10) << characters[x].gender
+                 << " | " << setw(5) << characters[x].age
+                 << " | " << setw(30) << characters[x].animeSeries
+                 << " | " << setw(12) << characters[x].status
+                 << " | " << setw(12) << characters[x].role
+                 << " | " << setw(20) << characters[x].power
+                 << " | " << setw(14) << characters[x].species
+                 << " | " << setw(12) << characters[x].height
+                 << " |" << endl;
+        }
+    }
+
+    if (counter == 0)
+    {
+        cout << setw(135) << "No record(s) found" << endl;
+    }
+
+    cout << "=============================================================================================================================================================================" << endl;
+
+    system("pause");
+
+}
+
+
+void searchRecord()
+{
+    system("CLS");
+    string searchId;
+    cout << "Enter Character ID to search: ";
+    cin >> searchId;
+    bool found = false;
+
+    cout << "====================================================================================================================================================================================================" << endl;
+    cout << "| " << setw(10) << "CODE NO."
+         << " | " << setw(13) << "NAME"
+         << setw(8) << " | " << setw(10) << "GENDER"
+         << setw(7) << " | " << setw(5) << "AGE"
+         << setw(5) << " | " << setw(27) << "ANIME SERIES"
+         << setw(10) << " | " << setw(9) << "STATUS"
+         << setw(5) << " | " << setw(11) << "ROLE"
+         << setw(9) << " | " << setw(10) << "POWER"
+         << setw(7) << "  | " << setw(11) << "SPECIES"
+         << "  | " << setw(11) << "HEIGHT (cm)"
+         << "  |" << endl;
+
+    for (int x = 0; x < maxrow; x++)
+    {
+        if (characters[x].charId == searchId)
+        {
+            found = true;
+            // Table row
+            cout << "| " << setw(10) << characters[x].charId << setw(3) << " | "
+                 << setw(13) << characters[x].charName << setw(8) << " | "
+                 << setw(9) << characters[x].gender << setw(8) << "| "
+                 << setw(5) << characters[x].age << setw(5) << " | "
+                 << setw(27) << characters[x].animeSeries << setw(10) << " | "
+                 << setw(9) << characters[x].status << setw(5) << " | "
+                 << setw(15) << characters[x].role << setw(5) << " | "
+                 << setw(10) << characters[x].power << setw(7) << " | "
+                 << setw(9) << characters[x].species << setw(6) << " | "
+                 << setw(7) << characters[x].height << setw(7) << " |" << endl;
+            break;
+        }
+    }
+
+    cout << "====================================================================================================================================================================================================" << endl;
+
+    if (!found)
+    {
+        cout << "Record not found." << endl;
+    }
+}
+
+void exitAndSave()
+{
+    ofstream outputFile("AnimeCharacterDatabase.txt");
+
+    if (outputFile.is_open())
+    {
+        for (int i = 0; i < maxrow; i++)
+        {
+            if (!characters[i].charId.empty())
+            {
+                outputFile << characters[i].charId << ","
+                           << characters[i].charName << ","
+                           << characters[i].gender << ","
+                           << characters[i].age << ","
+                           << characters[i].animeSeries << ","
+                           << characters[i].status << ","
+                           << characters[i].role << ","
+                           << characters[i].power << ","
+                           << characters[i].species << ","
+                           << characters[i].height << endl;
+            }
+        }
+
+        outputFile.close();
+        cout << "Records saved to file successfully." << endl;
+        cout << "Exiting the program..." << endl;
+        exit(0);
+    }
+    else
+    {
+        cout << "Unable to open file. Exiting the program without saving records." << endl;
+        exit(1);
+    }
+}
+
+
+int main() {
+    // Load existing records
+    OpenFile();
+    system("CLS");
+    string updateId;
+
+    int option;
+
+   do {
+        system("cls");
+        cout << "ANIME CHARACTER'S DATABASE" << endl;
+        cout << "1 - Create record" << endl;
+        cout << "2 - Update record" << endl;
+        cout << "3 - Delete record" << endl;
+        cout << "4 - Search record" << endl;
+        cout << "5 - Display all records" << endl;
+        cout << "6 - Exit and save to file" << endl;
+
+        cout << "Select option (1-6): ";
+        cin >> option;
+
+        cin.ignore(); // Ignore newline character left in input buffer
+        system("cls");
+
+        if (cin.fail() || option < 1 || option > 6) { // Check if input failed or out of range
+            cout << "Invalid choice! Please enter a number between 1 and 6" << endl;
+            cin.clear(); // Clear error flags
+            cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Discard invalid input
+            cout <<"Press ENTER to continue..." << endl;
+            cin.get(); // Wait for user to press ENTER
+            continue; // Skip the rest of the loop and prompt for option again
+        }
+
+
+
+        switch (option)
+        {
+        case 1:
+            system("cls");
+            addRecord();
+            system("cls");
+            cout << "Succesfully created a new Character's record: " << endl;
+            system("pause");
+            system("cls");
+            break;
+        case 2:
+            system("cls");
+            cout << "Enter Character ID to update: ";
+            cin >> updateId;
+            updateRecord(updateId);
+            system("pause");
+            system("cls");
+            break;
+        case 3:
+            deleteRecord();
+            system("pause");
+            system("cls");
+            break;
+        case 4:
+            system("cls");
+            searchRecord();
+            system("pause");
+            system("cls");
+            break;
+        case 5:
+            system("cls");
+
+            displayRecord();
+            system("cls");
+            break;
+        case 6:
+            exitAndSave();
+            break;
+        default:
+            cout << "Invalid option. Please try again." << endl;
+            break;
+        }
+
+    } while (option != 6);
+
+    return 0;
+}
